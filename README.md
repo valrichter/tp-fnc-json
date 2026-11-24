@@ -84,3 +84,26 @@ docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT cyk('{\"a\":10
 ```bash
 docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT (j - i + 1) AS nivel, string_agg('X[' || i || ',' || j || ']=' || array_to_string(x, ','), ' | ' ORDER BY i) AS celdas FROM matriz_cyk WHERE cardinality(x) > 0 GROUP BY (j - i + 1) ORDER BY (j - i + 1) DESC;"
 ```
+
+
+## Windows
+
+#### Iniciar DB en Docker
+```powershell
+docker rm -f postgres-cyk 2>$null
+docker run --name postgres-cyk -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=tp_cyk -p 5432:5432 -d postgres:16
+Start-Sleep -Seconds 3
+Get-ChildItem scripts/02*.sql, scripts/03*.sql, scripts/04*.sql | Sort-Object Name | ForEach-Object {
+    Get-Content $_.FullName -Raw | docker exec -i postgres-cyk psql -U postgres -d tp_cyk
+}
+```
+
+#### Probar string custom
+```powershell
+'SELECT cyk(''{"a":10,"b":''''hola'''',"c":{},"df":{"gh":20}}'');' | docker exec -i postgres-cyk psql -U postgres -d tp_cyk
+```
+
+#### Ver matriz
+```powershell
+"SELECT (j - i + 1) AS nivel, string_agg('X[' || i || ',' || j || ']=' || array_to_string(x, ','), ' | ' ORDER BY i) AS celdas FROM matriz_cyk WHERE cardinality(x) > 0 GROUP BY (j - i + 1) ORDER BY (j - i + 1) DESC;" | docker exec -i postgres-cyk psql -U postgres -d tp_cyk
+```
