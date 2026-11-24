@@ -84,8 +84,3 @@ docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT cyk('{\"a\":10
 ```bash
 docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT (j - i + 1) AS nivel, string_agg('X[' || i || ',' || j || ']=' || array_to_string(x, ','), ' | ' ORDER BY i) AS celdas FROM matriz_cyk WHERE cardinality(x) > 0 GROUP BY (j - i + 1) ORDER BY (j - i + 1) DESC;"
 ```
-
-
-
-git config --global user.name "Valentin Richter"
-git config --global user.email "valenrichter11@gmail.com"
