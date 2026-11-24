@@ -20,6 +20,7 @@ ORDER BY start DESC, parte_izq;
 
 -- Prueba individual y visualizacion de la matriz triangular
 SELECT cyk('{"a":10}') AS es_valido;
+-- SELECT cyk('{"a":10,"b":''hola'',"c":{},"df":{"gh":20}}') AS es_valido;
 
 SELECT 
     (j - i + 1) AS nivel,

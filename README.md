@@ -63,3 +63,29 @@ SELECT cyk('{"a":10}');
 SELECT cyk('{"a":}');
 -- Retorna: false
 ```
+
+
+#### Iniciar DB en Docker
+```bash
+docker rm -f postgres-cyk 2>/dev/null; \
+docker run --name postgres-cyk -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=tp_cyk -p 5432:5432 -d postgres:16 && \
+sleep 3 && \
+for f in scripts/02*.sql scripts/03*.sql scripts/04*.sql; do
+  docker exec -i postgres-cyk psql -U postgres -d tp_cyk < "$f"
+done
+```
+
+#### Probar string custom
+```bash
+docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT cyk('{\"a\":10,\"b\":''hola'',\"c\":{},\"df\":{\"gh\":20}}');"
+```
+
+#### Ver matriz
+```bash
+docker exec -i postgres-cyk psql -U postgres -d tp_cyk -c "SELECT (j - i + 1) AS nivel, string_agg('X[' || i || ',' || j || ']=' || array_to_string(x, ','), ' | ' ORDER BY i) AS celdas FROM matriz_cyk WHERE cardinality(x) > 0 GROUP BY (j - i + 1) ORDER BY (j - i + 1) DESC;"
+```
+
+
+
+git config --global user.name "Valentin Richter"
+git config --global user.email "valenrichter11@gmail.com"
